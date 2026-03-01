@@ -1,4 +1,5 @@
 -- Tabs.luau
+loadstring(game:HttpGet("https://raw.githubusercontent.com/hikage-the-cat/Cloud9GUI/refs/heads/main/Themes.luau",true))()
 local ts = game:GetService("TweenService")
 local tweeninf = TweenInfo.new(0.2, Enum.EasingStyle.Quad)
 
@@ -149,7 +150,7 @@ function Tabs:SwitchTab(name)
     for _, t in ipairs(self.tabs) do
         local isActive = t.name == name
         t.content.Visible = isActive
-        ts:Create(t.btn, tweeninfo2, {
+        ts:Create(t.btn, tweeninf, {
             BackgroundTransparency = isActive and 0 or 0.4,
             TextColor3 = isActive
                 and (theme.Accent or Color3.fromRGB(255, 255, 255))
