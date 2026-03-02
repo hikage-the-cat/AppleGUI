@@ -1,220 +1,255 @@
-    -- deps
-    themes = loadstring(game:HttpGet("https://raw.githubusercontent.com/hikage-the-cat/Cloud9GUI/refs/heads/main/Themes.luau",true))()
-    local uis = game:GetService("UserInputService")
-    local ts = game:GetService("TweenService")
-    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad)
-    local Cloud9Lib = {}
+local themeData = loadstring(game:HttpGet("https://raw.githubusercontent.com/hikage-the-cat/Cloud9GUI/refs/heads/main/Themes.luau", true))()
+local FrostedThemes = themeData.FrostedThemes
+local Themes = themeData.Themes
 
-    function Cloud9Lib:CreateWindow(Options)
-        Options = Options or {}
-        local title = Options.Title or "Cloud9 Window"
-        local theme = Options.theme or FrostedThemes.LightGlass
-        local size = Options.Size or UDim2.new(0, 400, 0, 300)
-        local position = Options.Position or UDim2.new(0, 100, 0, 100)
-        local originalSize = size
-        local isOpen = true
-        local keybind = Options.Keybind or Enum.KeyCode.C
-        local killKeybind = Options.KillKeybind or Enum.KeyCode.V
+local tabs = loadstring(game:HttpGet("https://raw.githubusercontent.com/hikage-the-cat/Cloud9GUI/refs/heads/main/Tabs.luau", true))()
 
-        -- min size so window cant get 2 small
-        local minWidth = 200
-        local minHeight = 100
+local uis = game:GetService("UserInputService")
+local ts = game:GetService("TweenService")
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad)
+local Cloud9Lib = {}
 
-        local ui = Instance.new("ScreenGui")
-            ui.Name = "Cloud9_" .. title
-            ui.ResetOnSpawn = false
-            ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-            ui.Parent = game:GetService("CoreGui")
+function Cloud9Lib:CreateWindow(Options)
+    Options = Options or {}
+    local title = Options.Title or "Cloud9 Window"
+    local theme = Options.theme or FrostedThemes.LightGlass
+    local size = Options.Size or UDim2.new(0, 400, 0, 300)
+    local position = Options.Position or UDim2.new(0, 100, 0, 100)
+    local originalSize = size
+    local isOpen = true
+    local keybind = Options.Keybind or Enum.KeyCode.C
+    local killKeybind = Options.KillKeybind or Enum.KeyCode.V
 
-            local frame = Instance.new("Frame")
-                frame.Name = "MainFrame"
-                frame.Size = size
-                frame.Position = position
-                frame.BackgroundColor3 = theme.Background
-                frame.BackgroundTransparency = theme.Transparency or 0
-                frame.Parent = ui
-                local uicorner = Instance.new("UICorner")
-                uicorner.CornerRadius = theme.CornerRadius or UDim.new(0, 10)
-                uicorner.Parent = frame
-                local outline = Instance.new("UIStroke")
-                    outline.Name = "Outline"
-                    outline.Color = theme.StrokeColor or Color3.fromRGB(0, 0, 0)
-                    outline.Transparency = theme.StrokeTrans or 0
-                    outline.Thickness = theme.StrokeThickness or 2
-                    outline.Parent = frame
+    -- min size so window cant get too small
+    local minWidth = 200
+    local minHeight = 100
 
-                local topbar = Instance.new("Frame")
-                    topbar.Name = "TopBar"
-                    topbar.Size = UDim2.new(1, 0, 0, 30)
-                    topbar.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(255, 255, 255)
-                    topbar.BackgroundTransparency = 0
-                    topbar.Parent = frame
-                    topbar.ZIndex = 21
-                    local uicorner2 = Instance.new("UICorner")
-                    uicorner2.CornerRadius = theme.CornerRadius or UDim.new(0, 5)
-                    uicorner2.Parent = topbar
-                    local nobtmcorners = Instance.new("Frame")
-                        nobtmcorners.Name = "NoBtmCorners"
-                        nobtmcorners.Size = UDim2.new(1, 0, 0, 15)
-                        nobtmcorners.Position = UDim2.new(0, 0, 0, 15)
-                        nobtmcorners.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(255, 255, 255)
-                        nobtmcorners.BackgroundTransparency = 0
-                        nobtmcorners.BorderSizePixel = 0
-                        nobtmcorners.Parent = topbar
+    local ui = Instance.new("ScreenGui")
+        ui.Name = "Cloud9_" .. title
+        ui.ResetOnSpawn = false
+        ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        ui.Parent = game:GetService("CoreGui")
 
-                        -- title 
-                        local titleLabel = Instance.new("TextLabel")
-                        titleLabel.Name = "Title"
-                        titleLabel.Size = UDim2.new(1, -60, 1, 0)
-                        titleLabel.Position = UDim2.new(0, 36, 0, 0)
-                        titleLabel.BackgroundTransparency = 1
-                        titleLabel.Text = title
-                        titleLabel.TextColor3 = theme.TextPrimary or Color3.fromRGB(150, 150, 150)
-                        titleLabel.Font = theme.Font or Enum.Font.Gotham
-                        titleLabel.TextSize = theme.TitleFontSize or 15
-                        titleLabel.Parent = topbar
-                        titleLabel.TextScaled = true
-                        titleLabel.ZIndex = 2 
+        local frame = Instance.new("Frame")
+            frame.Name = "MainFrame"
+            frame.Size = size
+            frame.Position = position
+            frame.BackgroundColor3 = theme.Background
+            frame.BackgroundTransparency = theme.Transparency or 0
+            frame.Parent = ui
+            local uicorner = Instance.new("UICorner")
+            uicorner.CornerRadius = theme.CornerRadius or UDim.new(0, 10)
+            uicorner.Parent = frame
+            local outline = Instance.new("UIStroke")
+                outline.Name = "Outline"
+                outline.Color = theme.StrokeColor or Color3.fromRGB(0, 0, 0)
+                outline.Transparency = theme.StrokeTrans or 0
+                outline.Thickness = theme.StrokeThickness or 2
+                outline.Parent = frame
 
-                        -- icon
-                        local icon = Instance.new("ImageLabel")
-                            icon.Parent = topbar
-                            icon.Rotation = -15
-                            icon.ImageColor3 = theme.Accent or Color3.fromRGB(0, 0, 0)
-                            icon.Image = "rbxassetid://11422151506"
-                            icon.BackgroundTransparency = 1
-                            icon.Position = UDim2.new(0, 0, 0.5, -14)
-                            icon.AnchorPoint = Vector2.new(0, 0)
-                            icon.Size = UDim2.fromOffset(28, 28)
-                -- framing for tabs
-                local tabbar = Instance.new("Frame")
-                    tabbar.Name = "TabBar"
-                    tabbar.Size = UDim2.new(1, 0, 0, 30)
-                    tabbar.Position = UDim2.new(0, 0, 0, 0)
-                    tabbar.visible = false
-                    tabbar.BorderSizePixel = 0
-                    tabbar.Parent = frame
-                    tabbar.ZIndex = 0
+            local topbar = Instance.new("Frame")
+                topbar.Name = "TopBar"
+                topbar.Size = UDim2.new(1, 0, 0, 30)
+                topbar.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(255, 255, 255)
+                topbar.BackgroundTransparency = 0
+                topbar.Parent = frame
+                topbar.ZIndex = 21
+                local uicorner2 = Instance.new("UICorner")
+                uicorner2.CornerRadius = theme.CornerRadius or UDim.new(0, 5)
+                uicorner2.Parent = topbar
+                local nobtmcorners = Instance.new("Frame")
+                    nobtmcorners.Name = "NoBtmCorners"
+                    nobtmcorners.Size = UDim2.new(1, 0, 0, 15)
+                    nobtmcorners.Position = UDim2.new(0, 0, 0, 15)
+                    nobtmcorners.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(255, 255, 255)
+                    nobtmcorners.BackgroundTransparency = 0
+                    nobtmcorners.BorderSizePixel = 0
+                    nobtmcorners.Parent = topbar
 
-                -- dragging
-                local dragging = false
-                local dragOffset = Vector2.new(0, 0)
+                -- title
+                local titleLabel = Instance.new("TextLabel")
+                titleLabel.Name = "Title"
+                titleLabel.Size = UDim2.new(1, -60, 1, 0)
+                titleLabel.Position = UDim2.new(0, 36, 0, 0)
+                titleLabel.BackgroundTransparency = 1
+                titleLabel.Text = title
+                titleLabel.TextColor3 = theme.TextPrimary or Color3.fromRGB(150, 150, 150)
+                titleLabel.Font = theme.Font or Enum.Font.Gotham
+                titleLabel.TextSize = theme.TitleFontSize or 15
+                titleLabel.Parent = topbar
+                titleLabel.TextScaled = true
+                titleLabel.ZIndex = 2
 
-                topbar.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        dragging = true
-                        local framePos = frame.AbsolutePosition
-                        local inputPos = input.Position
-                        dragOffset = Vector2.new(inputPos.X - framePos.X, inputPos.Y - framePos.Y)
-                    end
-                end)
+                -- icon
+                local icon = Instance.new("ImageLabel")
+                    icon.Parent = topbar
+                    icon.Rotation = -15
+                    icon.ImageColor3 = theme.Accent or Color3.fromRGB(0, 0, 0)
+                    icon.Image = "rbxassetid://11422151506"
+                    icon.BackgroundTransparency = 1
+                    icon.Position = UDim2.new(0, 0, 0.5, -14)
+                    icon.AnchorPoint = Vector2.new(0, 0)
+                    icon.Size = UDim2.fromOffset(28, 28)
 
-                topbar.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        dragging = false
-                    end
-                end)
 
-                uis.InputChanged:Connect(function(input)
-                    if not dragging then return end
-                    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                        frame.Position = UDim2.fromOffset(
-                            input.Position.X - dragOffset.X,
-                            input.Position.Y - dragOffset.Y
-                        )
-                    end
-                end)
+            local tabbar = Instance.new("Frame")
+                tabbar.Name = "TabBar"
+                tabbar.Size = UDim2.new(1, 0, 0, theme.TabBarHeight or 32)
+                tabbar.Position = UDim2.new(0, 0, 0, 30)
+                tabbar.Visible = false   -- FIX: was tabbar.visible (lowercase)
+                tabbar.BorderSizePixel = 0
+                tabbar.BackgroundColor3 = theme.TertiaryBg or Color3.fromRGB(50, 50, 55)
+                tabbar.BackgroundTransparency = 0
+                tabbar.Parent = frame
+                tabbar.ZIndex = 5
 
-                -- resize handle
-                local resizeHandle = Instance.new("TextButton")
-                    resizeHandle.Name = "ResizeHandle"
-                    resizeHandle.Size = UDim2.fromOffset(16, 16)
-                    resizeHandle.Position = UDim2.new(1, -16, 1, -16)
-                    resizeHandle.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(200, 200, 200)
-                    resizeHandle.BackgroundTransparency = 1
-                    resizeHandle.Text = ""
-                    resizeHandle.AutoButtonColor = false
-                    resizeHandle.ZIndex = 10
-                    resizeHandle.Parent = frame
+                -- layout for tab buttons
+                local tabLayout = Instance.new("UIListLayout")
+                tabLayout.FillDirection = Enum.FillDirection.Horizontal
+                tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                tabLayout.Padding = UDim.new(0, 4)
+                tabLayout.Parent = tabbar
 
-                -- resize logic
-                local resizing = false
-                local resizeStart = Vector2.new(0, 0)
-                local sizeAtResizeStart = Vector2.new(0, 0)
+            -- dragging
+            local dragging = false
+            local dragOffset = Vector2.new(0, 0)
 
-                resizeHandle.InputBegan:Connect(function(input)
-                    if not isOpen then return end
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        resizing = true
-                        resizeStart = Vector2.new(input.Position.X, input.Position.Y)
-                        sizeAtResizeStart = Vector2.new(frame.AbsoluteSize.X, frame.AbsoluteSize.Y)
-                    end
-                end)
+            topbar.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    dragging = true
+                    local framePos = frame.AbsolutePosition
+                    local inputPos = input.Position
+                    dragOffset = Vector2.new(inputPos.X - framePos.X, inputPos.Y - framePos.Y)
+                end
+            end)
 
-                resizeHandle.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                        resizing = false
+            topbar.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    dragging = false
+                end
+            end)
+
+            uis.InputChanged:Connect(function(input)
+                if not dragging then return end
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    frame.Position = UDim2.fromOffset(
+                        input.Position.X - dragOffset.X,
+                        input.Position.Y - dragOffset.Y
+                    )
+                end
+            end)
+
+            -- resize handle
+            local resizeHandle = Instance.new("TextButton")
+                resizeHandle.Name = "ResizeHandle"
+                resizeHandle.Size = UDim2.fromOffset(16, 16)
+                resizeHandle.Position = UDim2.new(1, -16, 1, -16)
+                resizeHandle.BackgroundColor3 = theme.SecondaryBg or Color3.fromRGB(200, 200, 200)
+                resizeHandle.BackgroundTransparency = 1
+                resizeHandle.Text = ""
+                resizeHandle.AutoButtonColor = false
+                resizeHandle.ZIndex = 10
+                resizeHandle.Parent = frame
+
+            -- resize logic
+            local resizing = false
+            local resizeStart = Vector2.new(0, 0)
+            local sizeAtResizeStart = Vector2.new(0, 0)
+
+            resizeHandle.InputBegan:Connect(function(input)
+                if not isOpen then return end
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    resizing = true
+                    resizeStart = Vector2.new(input.Position.X, input.Position.Y)
+                    sizeAtResizeStart = Vector2.new(frame.AbsoluteSize.X, frame.AbsoluteSize.Y)
+                end
+            end)
+
+            resizeHandle.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    resizing = false
+                    if isOpen then
                         originalSize = frame.Size
                     end
-                end)
+                end
+            end)
 
-                uis.InputChanged:Connect(function(input)
-                    if not resizing then return end
-                    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                        local delta = Vector2.new(
-                            input.Position.X - resizeStart.X,
-                            input.Position.Y - resizeStart.Y
-                        )
-                        local newW = math.max(minWidth, sizeAtResizeStart.X + delta.X)
-                        local newH = math.max(minHeight, sizeAtResizeStart.Y + delta.Y)
-                        frame.Size = UDim2.fromOffset(newW, newH)
+            uis.InputChanged:Connect(function(input)
+                if not resizing then return end
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    local delta = Vector2.new(
+                        input.Position.X - resizeStart.X,
+                        input.Position.Y - resizeStart.Y
+                    )
+                    local newW = math.max(minWidth, sizeAtResizeStart.X + delta.X)
+                    local newH = math.max(minHeight, sizeAtResizeStart.Y + delta.Y)
+                    frame.Size = UDim2.fromOffset(newW, newH)
+                end
+            end)
+
+
+            local toggling = false
+            uis.InputBegan:Connect(function(input, gpe)
+                if gpe then return end
+                if input.KeyCode == killKeybind then
+                    ui:Destroy()
+                    return
+                end
+                if input.KeyCode == keybind then
+                    if toggling then return end
+                    toggling = true
+
+                    if isOpen then
+                        -- Collapse to icon
+                        local tween = ts:Create(frame, tweenInfo, {
+                            Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
+                        })
+                        tween:Play()
+                        tween.Completed:Wait()
+                        nobtmcorners.Visible = false
+                        titleLabel.Visible = false
+                        resizeHandle.ZIndex = -10
+                        resizeHandle.Active = false
+                        ts:Create(frame, tweenInfo, {
+                            Size = UDim2.new(0, 30, 0, 30)
+                        }):Play()
+                        task.wait(0.3)
+                    else
+                        -- Expand back
+                        ts:Create(frame, tweenInfo, {
+                            Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
+                        }):Play()
+                        task.wait(0.3)
+                        nobtmcorners.Visible = true
+                        titleLabel.Visible = true
+                        resizeHandle.ZIndex = 10
+                        resizeHandle.Active = true
+                        ts:Create(frame, tweenInfo, {Size = originalSize}):Play()
+                        task.wait(0.3)
                     end
-                end)
 
+                    isOpen = not isOpen
+                    toggling = false
+                end
+            end)
 
-                                    -- open/close with keybind
-                uis.InputBegan:Connect(function(input, gpe)
-                    if gpe then return end
-                    if input.KeyCode == killKeybind then
-                        ui:Destroy()
-                        return
-                    end
-                    if input.KeyCode == keybind then
-                        if isOpen then
-                            local tween = ts:Create(frame, tweenInfo, {
-                                Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
-                            })
-                            tween:Play()
-                            tween.Completed:Connect(function()
-                                nobtmcorners.Visible = false
-                                titleLabel.Visible = false
-                                resizeHandle.ZIndex = -10
-                                resizeHandle.Active = false
-                                ts:Create(frame, tweenInfo, {
-                                    Size = UDim2.new(0, 30, 0, 30)
-                                }):Play()
-                            end)
-                        else
-                            ts:Create(frame, tweenInfo, {
-                                Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
-                            }):Play()
-                            task.wait(0.3)
-                            nobtmcorners.Visible = true
-                            titleLabel.Visible = true
-                            resizeHandle.ZIndex = 10
-                            resizeHandle.Active = true
-                            ts:Create(frame, tweenInfo, {Size = originalSize}):Play()
-                        end
-                        isOpen = not isOpen
-                    end
-                end)
-            return Cloud9Lib
-            end
+    local windowObj = {}
 
-    -- create window
-    Cloud9Lib:CreateWindow({
-        Title = "Cloud9...",
-        theme = FrostedThemes.LightGlass,
-        Size = UDim2.new(0, 500, 0, 400),
-        Position = UDim2.new(0, 150, 0, 150)
-    })
+    function windowObj:AddTab(name)
+        tabbar.Visible = true
+        local btn = tabs.createtabs(name, theme, tabbar)
+        return btn
+    end
+
+    function windowObj:GetFrame()
+        return frame
+    end
+
+    function windowObj:GetTabBar()
+        return tabbar
+    end
+
+    return windowObj
+end
+
+return Cloud9Lib
